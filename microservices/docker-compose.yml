@@ -59,6 +59,63 @@ services:
     networks:
       - school-network
 
+  postgres-assessment:
+    image: postgres:15-alpine
+    container_name: school-assessment-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: assessment_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - assessment_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - school-network
+
+  postgres-fee:
+    image: postgres:15-alpine
+    container_name: school-fee-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fee_db
+    ports:
+      - "5437:5432"
+    volumes:
+      - fee_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - school-network
+
+  postgres-attendance:
+    image: postgres:15-alpine
+    container_name: school-attendance-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: attendance_db
+    ports:
+      - "5438:5432"
+    volumes:
+      - attendance_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - school-network
+
   # Redis
   redis:
     image: redis:7-alpine
@@ -152,6 +209,86 @@ services:
     networks:
       - school-network
 
+  # Assessment Service
+  assessment-service:
+    build:
+      context: ./assessment-service
+      dockerfile: Dockerfile
+    container_name: school-assessment-service
+    environment:
+      NODE_ENV: development
+      PORT: 3004
+      DATABASE_URL: postgresql://postgres:postgres@postgres-assessment:5432/assessment_db?schema=public
+      AUTH_SERVICE_URL: http://auth-service:3001
+      STUDENT_SERVICE_URL: http://student-service:3002
+      ACADEMIC_SERVICE_URL: http://academic-service:3003
+      CORS_ORIGIN: http://localhost:5173
+    ports:
+      - "3004:3004"
+    depends_on:
+      postgres-assessment:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    volumes:
+      - ./assessment-service/src:/app/src
+      - ./assessment-service/prisma:/app/prisma
+    networks:
+      - school-network
+
+  # Fee Service
+  fee-service:
+    build:
+      context: ./fee-service
+      dockerfile: Dockerfile
+    container_name: school-fee-service
+    environment:
+      NODE_ENV: development
+      PORT: 3005
+      DATABASE_URL: postgresql://postgres:postgres@postgres-fee:5432/fee_db?schema=public
+      AUTH_SERVICE_URL: http://auth-service:3001
+      STUDENT_SERVICE_URL: http://student-service:3002
+      CORS_ORIGIN: http://localhost:5173
+    ports:
+      - "3005:3005"
+    depends_on:
+      postgres-fee:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    volumes:
+      - ./fee-service/src:/app/src
+      - ./fee-service/prisma:/app/prisma
+    networks:
+      - school-network
+
+  # Attendance Service
+  attendance-service:
+    build:
+      context: ./attendance-service
+      dockerfile: Dockerfile
+    container_name: school-attendance-service
+    environment:
+      NODE_ENV: development
+      PORT: 3006
+      DATABASE_URL: postgresql://postgres:postgres@postgres-attendance:5432/attendance_db?schema=public
+      AUTH_SERVICE_URL: http://auth-service:3001
+      STUDENT_SERVICE_URL: http://student-service:3002
+      ACADEMIC_SERVICE_URL: http://academic-service:3003
+      CORS_ORIGIN: http://localhost:5173
+    ports:
+      - "3006:3006"
+    depends_on:
+      postgres-attendance:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    volumes:
+      - ./attendance-service/src:/app/src
+      - ./attendance-service/prisma:/app/prisma
+    networks:
+      - school-network
+
   # API Gateway
   api-gateway:
     build:
@@ -164,6 +301,9 @@ services:
       AUTH_SERVICE_URL: http://auth-service:3001
       STUDENT_SERVICE_URL: http://student-service:3002
       ACADEMIC_SERVICE_URL: http://academic-service:3003
+      ASSESSMENT_SERVICE_URL: http://assessment-service:3004
+      FEE_SERVICE_URL: http://fee-service:3005
+      ATTENDANCE_SERVICE_URL: http://attendance-service:3006
       CORS_ORIGIN: http://localhost:5173
     ports:
       - "3000:3000"
@@ -171,6 +311,9 @@ services:
       - auth-service
       - student-service
       - academic-service
+      - assessment-service
+      - fee-service
+      - attendance-service
     networks:
       - school-network
 
@@ -178,6 +321,9 @@ volumes:
   auth_db_data:
   student_db_data:
   academic_db_data:
+  assessment_db_data:
+  fee_db_data:
+  attendance_db_data:
   redis_data:
 
 networks:

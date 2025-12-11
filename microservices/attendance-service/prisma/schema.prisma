@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Attendance {
+  id            String   @id @default(uuid())
+  studentId     String   // Reference to student service
+  classId       String?  // Reference to academic service
+  date          DateTime @default(now())
+  status        AttendanceStatus
+  period        Int?     // Period number (for secondary schools)
+  remarks       String?
+  markedBy      String   // User ID who marked attendance
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([studentId, date, period])
+  @@index([studentId])
+  @@index([date])
+  @@index([classId])
+  @@map("attendances")
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+  SICK
+}
+
+model AttendanceSummary {
+  id            String   @id @default(uuid())
+  studentId     String
+  classId       String?
+  academicYear  String
+  term          String?
+  month         Int?     // 1-12
+  totalDays     Int      @default(0)
+  presentDays   Int      @default(0)
+  absentDays    Int      @default(0)
+  lateDays      Int      @default(0)
+  excusedDays   Int      @default(0)
+  percentage    Decimal  @db.Decimal(5, 2)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([studentId, academicYear, term, month])
+  @@index([studentId])
+  @@index([academicYear])
+  @@map("attendance_summaries")
+}
+
+model LeaveApplication {
+  id            String   @id @default(uuid())
+  studentId     String
+  startDate     DateTime
+  endDate       DateTime
+  reason        String
+  status        LeaveStatus @default(PENDING)
+  approvedBy    String?  // User ID
+  approvedAt    DateTime?
+  remarks       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([studentId])
+  @@index([status])
+  @@map("leave_applications")
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}

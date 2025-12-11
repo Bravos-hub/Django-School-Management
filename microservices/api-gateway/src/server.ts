@@ -41,6 +41,9 @@ app.get('/health', (req, res) => {
       auth: process.env.AUTH_SERVICE_URL || 'http://localhost:3001',
       student: process.env.STUDENT_SERVICE_URL || 'http://localhost:3002',
       academic: process.env.ACADEMIC_SERVICE_URL || 'http://localhost:3003',
+      assessment: process.env.ASSESSMENT_SERVICE_URL || 'http://localhost:3004',
+      fee: process.env.FEE_SERVICE_URL || 'http://localhost:3005',
+      attendance: process.env.ATTENDANCE_SERVICE_URL || 'http://localhost:3006',
     },
   });
 });
@@ -122,6 +125,72 @@ app.use(
   })
 );
 
+// Assessment Service Routes
+app.use(
+  '/api/v1/exams',
+  createServiceProxy(process.env.ASSESSMENT_SERVICE_URL || 'http://localhost:3004', {
+    '^/api/v1/exams': '/api/v1/exams',
+  })
+);
+
+app.use(
+  '/api/v1/results',
+  createServiceProxy(process.env.ASSESSMENT_SERVICE_URL || 'http://localhost:3004', {
+    '^/api/v1/results': '/api/v1/results',
+  })
+);
+
+app.use(
+  '/api/v1/report-cards',
+  createServiceProxy(process.env.ASSESSMENT_SERVICE_URL || 'http://localhost:3004', {
+    '^/api/v1/report-cards': '/api/v1/report-cards',
+  })
+);
+
+// Fee Service Routes
+app.use(
+  '/api/v1/fee-structures',
+  createServiceProxy(process.env.FEE_SERVICE_URL || 'http://localhost:3005', {
+    '^/api/v1/fee-structures': '/api/v1/fee-structures',
+  })
+);
+
+app.use(
+  '/api/v1/payments',
+  createServiceProxy(process.env.FEE_SERVICE_URL || 'http://localhost:3005', {
+    '^/api/v1/payments': '/api/v1/payments',
+  })
+);
+
+app.use(
+  '/api/v1/fee-waivers',
+  createServiceProxy(process.env.FEE_SERVICE_URL || 'http://localhost:3005', {
+    '^/api/v1/fee-waivers': '/api/v1/fee-waivers',
+  })
+);
+
+// Attendance Service Routes
+app.use(
+  '/api/v1/attendances',
+  createServiceProxy(process.env.ATTENDANCE_SERVICE_URL || 'http://localhost:3006', {
+    '^/api/v1/attendances': '/api/v1/attendances',
+  })
+);
+
+app.use(
+  '/api/v1/attendance-summaries',
+  createServiceProxy(process.env.ATTENDANCE_SERVICE_URL || 'http://localhost:3006', {
+    '^/api/v1/attendance-summaries': '/api/v1/attendance-summaries',
+  })
+);
+
+app.use(
+  '/api/v1/leaves',
+  createServiceProxy(process.env.ATTENDANCE_SERVICE_URL || 'http://localhost:3006', {
+    '^/api/v1/leaves': '/api/v1/leaves',
+  })
+);
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({
@@ -139,6 +208,9 @@ app.listen(PORT, () => {
   console.log(`  - Auth Service: ${process.env.AUTH_SERVICE_URL || 'http://localhost:3001'}`);
   console.log(`  - Student Service: ${process.env.STUDENT_SERVICE_URL || 'http://localhost:3002'}`);
   console.log(`  - Academic Service: ${process.env.ACADEMIC_SERVICE_URL || 'http://localhost:3003'}`);
+  console.log(`  - Assessment Service: ${process.env.ASSESSMENT_SERVICE_URL || 'http://localhost:3004'}`);
+  console.log(`  - Fee Service: ${process.env.FEE_SERVICE_URL || 'http://localhost:3005'}`);
+  console.log(`  - Attendance Service: ${process.env.ATTENDANCE_SERVICE_URL || 'http://localhost:3006'}`);
 });
 
 export default app;
