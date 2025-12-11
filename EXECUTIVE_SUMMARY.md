@@ -131,15 +131,23 @@ This document provides a high-level overview of the proposed microservices archi
 ## Technology Stack
 
 ### Backend
-- **Languages**: Python (Django/FastAPI), Node.js, Go, Java
-- **Databases**: PostgreSQL, MongoDB, Redis
+- **Language**: Node.js with TypeScript
+- **Framework**: Express.js or Fastify
+- **Databases**: PostgreSQL (primary), MongoDB (for documents), Redis (caching)
+- **ORM**: Prisma or TypeORM
 - **Message Queue**: RabbitMQ or Apache Kafka
-- **API**: REST APIs
+- **API**: REST APIs (GraphQL optional)
+- **Authentication**: JWT, Passport.js
 
 ### Frontend
-- **Web**: React or Vue.js
-- **Mobile**: React Native or Flutter
-- **Admin**: Custom admin panel
+- **Framework**: React with TypeScript
+- **Build Tool**: Vite
+- **State Management**: Redux Toolkit or Zustand
+- **UI Library**: Material-UI, Ant Design, or Chakra UI
+- **Routing**: React Router
+- **Styling**: Tailwind CSS or CSS Modules
+- **Mobile**: React Native (for mobile apps)
+- **Admin**: Custom React admin panel
 
 ### Infrastructure
 - **Containers**: Docker

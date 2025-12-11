@@ -20,7 +20,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
 - Integration with Uganda's national ID verification (if available)
 - Support for mobile money authentication (MTN Mobile Money, Airtel Money)
 
-**Technologies**: JWT, OAuth2, Redis for session storage
+**Technologies**: Node.js, Express.js, JWT, OAuth2, Passport.js, Redis for session storage
 
 ---
 
@@ -61,7 +61,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Transfer certificate generation
   - Leaving certificate management
 
-**Technologies**: REST API, PostgreSQL, File storage (S3/MinIO)
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM), File storage (S3/MinIO)
 
 ---
 
@@ -105,7 +105,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Conflict detection
   - Timetable generation algorithms
 
-**Technologies**: REST API, PostgreSQL, Scheduling algorithms
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM), Scheduling algorithms
 
 ---
 
@@ -141,7 +141,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Professional development plans
   - Training records
 
-**Technologies**: REST API, PostgreSQL, Document storage
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM), Document storage
 
 ---
 
@@ -186,7 +186,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Parent portal access
   - Results printing
 
-**Technologies**: REST API, PostgreSQL, PDF generation, Excel processing
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM), PDF generation (pdfkit/puppeteer), Excel processing (exceljs)
 
 ---
 
@@ -234,7 +234,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Revenue analytics
   - Fee defaulters list
 
-**Technologies**: REST API, PostgreSQL, Payment gateway APIs, SMS gateway
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM), Payment gateway APIs (MTN Mobile Money, Airtel Money), SMS gateway
 
 ---
 
@@ -270,7 +270,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Absenteeism alerts
   - Attendance certificates
 
-**Technologies**: REST API, PostgreSQL, Biometric devices integration, Real-time processing
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM), Socket.io for real-time, Biometric devices integration
 
 ---
 
@@ -300,7 +300,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Borrowing history
   - Library usage statistics
 
-**Technologies**: REST API, PostgreSQL, Search engine (Elasticsearch)
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM), Search engine (Elasticsearch or PostgreSQL full-text search)
 
 ---
 
@@ -329,7 +329,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Emergency contact system
   - Route optimization
 
-**Technologies**: REST API, PostgreSQL, GPS tracking APIs, Real-time updates
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM), Socket.io for real-time, GPS tracking APIs
 
 ---
 
@@ -356,7 +356,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Facility issue reporting
   - Inventory management (beds, furniture, etc.)
 
-**Technologies**: REST API, PostgreSQL
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM)
 
 ---
 
@@ -394,7 +394,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Circular distribution
   - Event announcements
 
-**Technologies**: REST API, Message queues (RabbitMQ/Kafka), SMS gateway, Email service (SendGrid/SES)
+**Technologies**: Node.js, Express.js, REST API, Socket.io for real-time, Message queues (RabbitMQ/Kafka), SMS gateway, Email service (SendGrid/SES)
 
 ---
 
@@ -426,7 +426,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Transport applications
   - Fee waiver applications
 
-**Technologies**: REST API, Web portal, Mobile app
+**Technologies**: Node.js, Express.js, REST API, React (Vite + TypeScript) web portal, React Native mobile app
 
 ---
 
@@ -451,7 +451,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - View announcements
   - Join class discussions (if enabled)
 
-**Technologies**: REST API, Web portal, Mobile app
+**Technologies**: Node.js, Express.js, REST API, React (Vite + TypeScript) web portal, React Native mobile app
 
 ---
 
@@ -474,7 +474,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Inventory reports
   - Low stock alerts
 
-**Technologies**: REST API, PostgreSQL
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM)
 
 ---
 
@@ -498,7 +498,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Supplier management
   - Expiry tracking
 
-**Technologies**: REST API, PostgreSQL
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM)
 
 ---
 
@@ -522,7 +522,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Event calendar
   - Integration with academic calendar
 
-**Technologies**: REST API, PostgreSQL, Calendar integration
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM), Calendar integration (iCal/Google Calendar APIs)
 
 ---
 
@@ -548,7 +548,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Medication reminders
   - Health screening schedules
 
-**Technologies**: REST API, PostgreSQL, HIPAA-compliant storage (if applicable)
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM), HIPAA-compliant storage (if applicable)
 
 ---
 
@@ -581,7 +581,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Excel exports
   - CSV exports
 
-**Technologies**: REST API, PostgreSQL, Analytics engine, Visualization tools (Chart.js, D3.js)
+**Technologies**: Node.js, Express.js, REST API, PostgreSQL (Prisma/TypeORM), Analytics engine, Visualization tools (Chart.js, D3.js, Recharts)
 
 ---
 
@@ -609,7 +609,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Excel files
   - Certificates
 
-**Technologies**: REST API, Object storage (S3/MinIO), Document processing
+**Technologies**: Node.js, Express.js, REST API, Object storage (S3/MinIO), Document processing (pdfkit, sharp for images)
 
 ---
 
@@ -637,7 +637,7 @@ This document outlines a comprehensive microservices-based architecture for a mo
   - Notification scheduling
   - Notification templates
 
-**Technologies**: Message queues, SMS gateway, Email service, Push notification service
+**Technologies**: Node.js, Express.js, Message queues (RabbitMQ/Kafka), SMS gateway, Email service (SendGrid/SES), Push notification service (Firebase Cloud Messaging)
 
 ---
 
@@ -721,18 +721,31 @@ This document outlines a comprehensive microservices-based architecture for a mo
 
 ---
 
-## Technology Stack Recommendations
+## Technology Stack
 
 ### Backend
-- **Languages**: Python (Django/FastAPI), Node.js, Java (Spring Boot), Go
+- **Language**: Node.js (TypeScript recommended)
+- **Framework**: Express.js or Fastify
+- **Runtime**: Node.js LTS
 - **Databases**: PostgreSQL (primary), MongoDB (for documents), Redis (caching)
 - **Message Queue**: RabbitMQ or Apache Kafka
 - **API**: REST APIs, GraphQL (optional)
+- **ORM/ODM**: Prisma, TypeORM, or Mongoose
+- **Authentication**: JWT, Passport.js
+- **Validation**: Joi or Zod
+- **Testing**: Jest, Mocha, or Vitest
 
 ### Frontend
-- **Web**: React, Vue.js, or Angular
-- **Mobile**: React Native, Flutter, or Native (iOS/Android)
-- **Admin Panel**: React Admin, Django Admin, or custom
+- **Framework**: React with TypeScript
+- **Build Tool**: Vite
+- **State Management**: Redux Toolkit, Zustand, or React Query
+- **UI Library**: Material-UI, Ant Design, or Chakra UI
+- **Routing**: React Router
+- **Forms**: React Hook Form with Zod validation
+- **HTTP Client**: Axios or Fetch API
+- **Styling**: Tailwind CSS, CSS Modules, or Styled Components
+- **Mobile**: React Native (for mobile apps)
+- **Admin Panel**: Custom React admin panel
 
 ### Infrastructure
 - **Containerization**: Docker

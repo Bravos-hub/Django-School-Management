@@ -253,24 +253,45 @@
 
 ---
 
-## Technology Stack Recommendations by Service
+## Technology Stack
 
-### High-Traffic Services (Use Fast Languages)
-- Authentication Service: Go or Node.js
-- Communication Service: Node.js or Go
-- Notification Service: Node.js or Go
+### Backend (All Services)
+- **Language**: Node.js with TypeScript
+- **Framework**: Express.js or Fastify
+- **Database**: PostgreSQL (primary), MongoDB (for documents), Redis (caching)
+- **ORM**: Prisma or TypeORM
+- **Message Queue**: RabbitMQ or Apache Kafka
+- **API**: REST APIs (GraphQL optional for complex queries)
 
-### Data-Intensive Services (Use Robust Frameworks)
-- Student Information Service: Python (Django/FastAPI) or Java (Spring Boot)
-- Academic Management Service: Python (Django/FastAPI) or Java (Spring Boot)
-- Assessment & Results Service: Python (Django/FastAPI) or Java (Spring Boot)
+### Frontend (All Applications)
+- **Framework**: React with TypeScript
+- **Build Tool**: Vite
+- **State Management**: Redux Toolkit or Zustand
+- **UI Library**: Material-UI, Ant Design, or Chakra UI
+- **Routing**: React Router
+- **Forms**: React Hook Form with Zod
+- **HTTP Client**: Axios
+- **Styling**: Tailwind CSS or CSS Modules
 
-### Real-Time Services
-- Attendance Service: Node.js or Go
-- Communication Service: Node.js with WebSockets
+### Service-Specific Considerations
 
-### Compute-Intensive Services
-- Reporting & Analytics: Python (with pandas/numpy) or Java
+#### High-Traffic Services
+- Authentication Service: Node.js (Express/Fastify)
+- Communication Service: Node.js with WebSockets (Socket.io)
+- Notification Service: Node.js (Express/Fastify)
+
+#### Data-Intensive Services
+- Student Information Service: Node.js with Prisma/TypeORM
+- Academic Management Service: Node.js with Prisma/TypeORM
+- Assessment & Results Service: Node.js with Prisma/TypeORM
+
+#### Real-Time Services
+- Attendance Service: Node.js with WebSockets (Socket.io)
+- Communication Service: Node.js with WebSockets (Socket.io)
+
+#### Compute-Intensive Services
+- Reporting & Analytics: Node.js (can use worker threads for heavy computations)
+  - For complex analytics, consider Python microservice or Node.js with native modules
 
 ---
 
