@@ -1,0 +1,29 @@
+// Common types used across the application
+
+export interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  error?: {
+    message: string;
+    code?: string;
+  };
+  meta?: {
+    page?: number;
+    limit?: number;
+    total?: number;
+  };
+}
+
+export interface PaginationParams {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface UserRole {
+  ADMIN: 'admin';
+  TEACHER: 'teacher';
+  STUDENT: 'student';
+  PARENT: 'parent';
+}
