@@ -23,13 +23,13 @@ export interface AuthResponse {
 
 export const authService = {
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>('/auth/login', credentials);
-    return response.data;
+    const response = await api.post<{ success: boolean; data: AuthResponse }>('/auth/login', credentials);
+    return response.data.data;
   },
 
   register: async (data: RegisterData): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>('/auth/register', data);
-    return response.data;
+    const response = await api.post<{ success: boolean; data: AuthResponse }>('/auth/register', data);
+    return response.data.data;
   },
 
   logout: async (): Promise<void> => {
@@ -37,7 +37,7 @@ export const authService = {
   },
 
   getMe: async (): Promise<AuthResponse['user']> => {
-    const response = await api.get<AuthResponse['user']>('/auth/me');
-    return response.data;
+    const response = await api.get<{ success: boolean; data: AuthResponse['user'] }>('/auth/me');
+    return response.data.data;
   },
 };

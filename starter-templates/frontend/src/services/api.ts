@@ -26,7 +26,23 @@ api.interceptors.request.use(
 
 // Response interceptor
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Handle microservices response format { success, data, error }
+    if (response.data && typeof response.data === 'object' && 'success' in response.data) {
+      if (response.data.success) {
+        return response;
+      } else {
+        // Handle error from microservice
+        const error = new Error(response.data.error?.message || 'Request failed');
+        (error as any).response = {
+          ...response,
+          data: response.data.error,
+        };
+        return Promise.reject(error);
+      }
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');

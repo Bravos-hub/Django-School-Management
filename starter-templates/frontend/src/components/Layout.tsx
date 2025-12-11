@@ -31,6 +31,36 @@ const Layout = () => {
                   >
                     Dashboard
                   </Link>
+                  <Link
+                    to="/students"
+                    className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Students
+                  </Link>
+                  <Link
+                    to="/classes"
+                    className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Classes
+                  </Link>
+                  <Link
+                    to="/exams"
+                    className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Exams
+                  </Link>
+                  <Link
+                    to="/payments"
+                    className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Payments
+                  </Link>
+                  <Link
+                    to="/attendance"
+                    className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Attendance
+                  </Link>
                 </div>
               )}
             </div>
