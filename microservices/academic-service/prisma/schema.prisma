@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Class {
+  id            String   @id @default(uuid())
+  name          String   @unique // e.g., "S1", "S2", "P1", "P2"
+  level         String   // PRIMARY, SECONDARY
+  section       String?  // A, B, C, etc.
+  capacity      Int      @default(40)
+  classTeacherId String? // Reference to teacher (from another service or local)
+  academicYear  String   // e.g., "2024"
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  subjects      ClassSubject[]
+  timetable     TimetableSlot[]
+
+  @@index([level])
+  @@index([academicYear])
+  @@map("classes")
+}
+
+model Subject {
+  id            String   @id @default(uuid())
+  name          String
+  code          String   @unique
+  description   String?
+  level         String   // PRIMARY, SECONDARY
+  category      SubjectCategory
+  theoryMarks   Int      @default(100)
+  practicalMarks Int    @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  classSubjects ClassSubject[]
+
+  @@index([level])
+  @@map("subjects")
+}
+
+enum SubjectCategory {
+  CORE
+  ELECTIVE
+  PRACTICAL
+}
+
+model ClassSubject {
+  id            String   @id @default(uuid())
+  classId       String
+  subjectId     String
+  teacherId     String?  // Reference to teacher
+  schedule      Json?    // Timetable information
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  class         Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subject       Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, subjectId])
+  @@map("class_subjects")
+}
+
+model AcademicYear {
+  id            String   @id @default(uuid())
+  year          String   @unique // e.g., "2024"
+  startDate     DateTime
+  endDate       DateTime
+  terms         Term[]
+  isActive      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("academic_years")
+}
+
+model Term {
+  id            String   @id @default(uuid())
+  academicYearId String
+  name          String   // "Term 1", "Term 2", "Term 3"
+  startDate     DateTime
+  endDate       DateTime
+  isActive      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  academicYear  AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+
+  @@unique([academicYearId, name])
+  @@map("terms")
+}
+
+model TimetableSlot {
+  id            String   @id @default(uuid())
+  classId       String
+  dayOfWeek     Int      // 0 = Sunday, 1 = Monday, etc.
+  period         Int      // Period number
+  subjectId     String?
+  teacherId     String?
+  room          String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  class         Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, dayOfWeek, period])
+  @@map("timetable_slots")
+}
