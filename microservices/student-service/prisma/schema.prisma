@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id                String   @id @default(uuid())
+  userId            String   @unique // Reference to auth service user ID
+  admissionNumber   String   @unique
+  firstName         String
+  lastName          String
+  dateOfBirth       DateTime?
+  gender            Gender?
+  phoneNumber       String?
+  currentAddress    String?
+  permanentAddress  String?
+  
+  // Parent/Guardian Information
+  parentId          String?
+  guardianName      String?
+  guardianPhone     String?
+  guardianRelation  String?
+  
+  // Academic Information
+  classId           String?  // Reference to academic service
+  enrollmentDate     DateTime @default(now())
+  status            StudentStatus @default(ACTIVE)
+  
+  // Uganda-specific fields
+  district          String?
+  nationality       String   @default("Ugandan")
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  parent            Parent?  @relation(fields: [parentId], references: [id])
+  documents         StudentDocument[]
+  admissions        Admission[]
+
+  @@index([admissionNumber])
+  @@index([userId])
+  @@index([classId])
+  @@map("students")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum StudentStatus {
+  ACTIVE
+  SUSPENDED
+  TRANSFERRED
+  GRADUATED
+  DROPPED
+}
+
+model Parent {
+  id            String   @id @default(uuid())
+  userId        String   @unique // Reference to auth service user ID
+  firstName     String
+  lastName      String
+  phoneNumber   String?
+  email         String?
+  occupation    String?
+  address       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  students      Student[]
+
+  @@map("parents")
+}
+
+model Admission {
+  id                String   @id @default(uuid())
+  studentId         String
+  applicationType   ApplicationType @default(ONLINE)
+  examName          String?  // HSC, SSC, etc.
+  passingYear       String?
+  board             String?
+  gpa               Decimal? @db.Decimal(4, 2)
+  status            AdmissionStatus @default(PENDING)
+  admissionDate     DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  student           Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("admissions")
+}
+
+enum ApplicationType {
+  ONLINE
+  OFFLINE
+}
+
+enum AdmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ADMITTED
+}
+
+model StudentDocument {
+  id          String   @id @default(uuid())
+  studentId   String
+  documentType DocumentType
+  fileName    String
+  filePath    String
+  uploadedAt  DateTime @default(now())
+
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("student_documents")
+}
+
+enum DocumentType {
+  BIRTH_CERTIFICATE
+  PREVIOUS_SCHOOL_RECORD
+  PHOTO
+  NATIONAL_ID
+  OTHER
+}

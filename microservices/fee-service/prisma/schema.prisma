@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FeeStructure {
+  id            String   @id @default(uuid())
+  name          String
+  description   String?
+  academicYear  String
+  term          String?  // Term 1, 2, 3
+  classId       String?  // Optional: class-specific fees
+  feeType       FeeType
+  amount        Decimal  @db.Decimal(10, 2)
+  dueDate       DateTime?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  payments      Payment[]
+
+  @@index([academicYear])
+  @@index([feeType])
+  @@map("fee_structures")
+}
+
+enum FeeType {
+  TUITION
+  DEVELOPMENT
+  LIBRARY
+  LABORATORY
+  SPORTS
+  UNIFORM
+  EXAM
+  TRANSPORT
+  BOARDING
+  OTHER
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  studentId       String   // Reference to student service
+  feeStructureId  String?
+  amount          Decimal  @db.Decimal(10, 2)
+  paymentMethod   PaymentMethod
+  paymentStatus   PaymentStatus @default(PENDING)
+  transactionId   String?  @unique
+  paymentDate     DateTime @default(now())
+  dueDate         DateTime?
+  receiptNumber   String   @unique
+  remarks         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  feeStructure    FeeStructure? @relation(fields: [feeStructureId], references: [id])
+  installments    PaymentInstallment[]
+
+  @@index([studentId])
+  @@index([paymentStatus])
+  @@index([transactionId])
+  @@index([receiptNumber])
+  @@map("payments")
+}
+
+enum PaymentMethod {
+  CASH
+  MTN_MOBILE_MONEY
+  AIRTEL_MONEY
+  BANK_TRANSFER
+  CHEQUE
+  CARD
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+model PaymentInstallment {
+  id            String   @id @default(uuid())
+  paymentId     String
+  installmentNumber Int
+  amount        Decimal  @db.Decimal(10, 2)
+  dueDate       DateTime
+  paidDate      DateTime?
+  status        InstallmentStatus @default(PENDING)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  payment       Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@unique([paymentId, installmentNumber])
+  @@map("payment_installments")
+}
+
+enum InstallmentStatus {
+  PENDING
+  PAID
+  OVERDUE
+}
+
+model FeeWaiver {
+  id            String   @id @default(uuid())
+  studentId     String
+  feeStructureId String?
+  amount        Decimal  @db.Decimal(10, 2)
+  percentage    Decimal? @db.Decimal(5, 2) // Percentage discount
+  reason        String
+  approvedBy    String   // User ID
+  approvedAt    DateTime @default(now())
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([studentId])
+  @@map("fee_waivers")
+}
+
+model Scholarship {
+  id            String   @id @default(uuid())
+  name          String
+  description   String?
+  studentId     String
+  percentage    Decimal  @db.Decimal(5, 2) // Percentage discount
+  amount        Decimal? @db.Decimal(10, 2) // Fixed amount
+  startDate     DateTime
+  endDate       DateTime?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([studentId])
+  @@map("scholarships")
+}

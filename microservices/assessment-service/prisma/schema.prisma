@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Exam {
+  id            String   @id @default(uuid())
+  name          String
+  examType      ExamType
+  classId       String   // Reference to academic service class
+  subjectId     String?  // Optional: subject-specific exam
+  termId        String?  // Reference to term
+  academicYear  String
+  startDate     DateTime?
+  endDate       DateTime?
+  totalMarks    Decimal  @db.Decimal(10, 2)
+  passingMarks  Decimal  @db.Decimal(10, 2)
+  status        ExamStatus @default(SCHEDULED)
+  instructions  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  results       ExamResult[]
+
+  @@index([classId])
+  @@index([examType])
+  @@index([status])
+  @@map("exams")
+}
+
+enum ExamType {
+  CONTINUOUS_ASSESSMENT
+  MID_TERM
+  END_OF_TERM
+  MOCK_EXAM
+  UCE
+  UACE
+  PLE
+}
+
+enum ExamStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model ExamResult {
+  id            String   @id @default(uuid())
+  examId        String
+  studentId     String   // Reference to student service student ID
+  subjectId     String?  // If exam is subject-specific
+  marksObtained Decimal @db.Decimal(10, 2)
+  grade         String?
+  remarks       String?
+  isAbsent      Boolean  @default(false)
+  isPassed      Boolean?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  exam          Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@unique([examId, studentId, subjectId])
+  @@index([studentId])
+  @@index([examId])
+  @@map("exam_results")
+}
+
+model Grade {
+  id            String   @id @default(uuid())
+  name          String   @unique // e.g., "A", "B", "C", "D", "F"
+  minMarks      Decimal  @db.Decimal(5, 2)
+  maxMarks      Decimal  @db.Decimal(5, 2)
+  gradePoint    Decimal  @db.Decimal(3, 2) // For GPA calculation
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("grades")
+}
+
+model ReportCard {
+  id            String   @id @default(uuid())
+  studentId     String
+  termId        String?
+  academicYear  String
+  totalMarks    Decimal  @db.Decimal(10, 2)
+  marksObtained Decimal  @db.Decimal(10, 2)
+  percentage    Decimal  @db.Decimal(5, 2)
+  grade         String?
+  rank          Int?
+  classRank     Int?
+  remarks       String?
+  generatedAt   DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  subjects      ReportCardSubject[]
+
+  @@index([studentId])
+  @@index([academicYear])
+  @@map("report_cards")
+}
+
+model ReportCardSubject {
+  id            String   @id @default(uuid())
+  reportCardId  String
+  subjectName   String
+  subjectCode   String?
+  marksObtained Decimal  @db.Decimal(10, 2)
+  totalMarks    Decimal  @db.Decimal(10, 2)
+  grade         String?
+  rank          Int?
+
+  reportCard    ReportCard @relation(fields: [reportCardId], references: [id], onDelete: Cascade)
+
+  @@map("report_card_subjects")
+}
